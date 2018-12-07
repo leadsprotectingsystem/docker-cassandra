@@ -146,14 +146,14 @@ RUN set -ex; \
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
   sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' "$CASSANDRA_CONFIG/cassandra-env.sh"
 
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh # backwards compat
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 RUN cat "$CASSANDRA_CONFIG/cassandra.yaml" | \
       sed s/AllowAllAuthenticator/PasswordAuthenticator/g | \
       sed s/AllowAllAuthorizer/CassandraAuthorizer/g | \
       tee "$CASSANDRA_CONFIG/cassandra.yaml" > /dev/null
-
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN ln -s usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh # backwards compat
-ENTRYPOINT ["docker-entrypoint.sh"]
 
 RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" \
 	&& chown -R cassandra:cassandra /var/lib/cassandra "$CASSANDRA_CONFIG" \
