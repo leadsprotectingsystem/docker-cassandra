@@ -148,7 +148,7 @@ RUN set -ex; \
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh # backwards compat
-RUN chmod u+x /usr/local/bin/docker-entrypoint.sh
+RUN chmod ugo+x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 RUN cat "$CASSANDRA_CONFIG/cassandra.yaml" | \
